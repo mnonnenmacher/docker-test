@@ -1,0 +1,8 @@
+[versions]
+eclipseTemurin = "17.0.10_7-jdk-jammy"
+jibPlugin = "3.4.0"
+kotlinPlugin = "1.9.22"
+
+[plugins]
+jib = { id = "com.google.cloud.tools.jib", version.ref = "jibPlugin" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinPlugin" }
