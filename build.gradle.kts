@@ -22,7 +22,7 @@ application {
 }
 
 jib {
-    from.image = "eclipse-temurin:${libs.versions.eclipseTemurin.get()}"
+    from.image = "docker://docker-test-base:latest"
     to.image = "docker-test:latest"
 
     container {
