@@ -58,7 +58,7 @@ jobs:
       - name: Print labels
         run: echo $(echo "${{ steps.meta.outputs.labels }}" | tr '\n' ',' | sed 's/,$//')
       - name: Build App
-        run: ./gradlew jibDockerBuild --image ${{ env.IMAGE_TAG }} -Djib.container.labels="$(echo "${{ steps.meta.outputs.labels }}" | tr '\n' ',' | sed 's/,$//')"
+        run: ./gradlew jibDockerBuild --image ${{ env.IMAGE_TAG }} -Djib.console=plain -Djib.container.labels="$(echo "${{ steps.meta.outputs.labels }}" | tr '\n' ',' | sed 's/,$//')"
       - name: Print image labels
         run: docker image inspect ${{ env.IMAGE_TAG }} | jq -r '.[0].Config.Labels'
       - name: Verify image

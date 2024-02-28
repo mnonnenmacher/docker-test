@@ -48,7 +48,7 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - name: Build App
-        run: ./gradlew jibDockerBuild --image ${{ env.IMAGE_TAG }}
+        run: ./gradlew jibDockerBuild --image ${{ env.IMAGE_TAG }} -Djib.console=plain
       - name: Verify image
         run: docker run --rm ${{ env.IMAGE_TAG }}
       - name: Run Tests
