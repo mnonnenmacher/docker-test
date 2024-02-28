@@ -1,4 +1,4 @@
-name: PR
+name: main
 
 on:
   push:
@@ -37,8 +37,8 @@ jobs:
           push: false
           load: true
           tags: docker-test-base:latest
-          cache-from: type=registry,ref=${{ env.BASE_IMAGE_CACHE_TAG }}:cache
-          cache-to: type=registry,ref=${{ env.BASE_IMAGE_CACHE_TAG }}:cache,mode=max
+          cache-from: type=registry,ref=${{ env.BASE_IMAGE_CACHE_TAG }}
+          cache-to: type=registry,ref=${{ env.BASE_IMAGE_CACHE_TAG }},mode=max
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -55,10 +55,12 @@ jobs:
           tags: |
             type=ref,event=branch
             type=sha
+      - name: Print labels
+        run: echo $(echo "${{ steps.meta.outputs.labels }}" | tr '\n' ',' | sed 's/,$//')
       - name: Build App
-        run: ./gradlew jibDockerBuild -Djib.container.labels="$("${{ steps.meta.outputs.labels }}" | tr '\n' ',')"
+        run: ./gradlew jibDockerBuild --image ${{ env.IMAGE_TAG }} -Djib.container.labels="$(echo "${{ steps.meta.outputs.labels }}" | tr '\n' ',' | sed 's/,$//')"
       - name: Print image labels
-        run: docker image ls --format "{{.Labels}}" ${{ env.IMAGE_TAG }}
+        run: docker image inspect ${{ env.IMAGE_TAG }} | jq -r '.[0].Config.Labels'
       - name: Verify image
         run: docker run --rm ${{ env.IMAGE_TAG }}
       - name: Run Tests
