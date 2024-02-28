@@ -11,10 +11,11 @@ env:
   BASE_IMAGE_NAME: docker-test-base
   BASE_IMAGE_CACHE_TAG: ghcr.io/mnonnenmacher/docker-test-base:cache
   IMAGE_NAME: docker-test
+  IMAGE_FULL_NAME: ghcr.io/mnonnenmacher/docker-test
   IMAGE_TAG: ghcr.io/mnonnenmacher/docker-test:latest
 
 jobs:
-  pr:
+  main:
     runs-on: ubuntu-22.04
     permissions:
       packages: write
@@ -58,7 +59,12 @@ jobs:
       - name: Print labels
         run: echo $(echo "${{ steps.meta.outputs.labels }}" | tr '\n' ',' | sed 's/,$//')
       - name: Build App
-        run: ./gradlew jibDockerBuild --image ${{ env.IMAGE_TAG }} -Djib.console=plain -Djib.container.labels="$(echo "${{ steps.meta.outputs.labels }}" | tr '\n' ',' | sed 's/,$//')"
+        run: |
+          ./gradlew jibDockerBuild \
+            --image ${{ env.IMAGE_TAG }} \
+            -Djib.console=plain \
+            -Djib.container.labels="$(echo "${{ steps.meta.outputs.labels }}" | tr '\n' ',' | sed 's/,$//')" \
+            -Djib.container.tags="$(echo "${{ steps.meta.outputs.tags }}" | tr '\n' ',' | sed 's/,$//')"
       - name: Print image labels
         run: docker image inspect ${{ env.IMAGE_TAG }} | jq -r '.[0].Config.Labels'
       - name: Verify image
@@ -72,4 +78,4 @@ jobs:
             --entrypoint=sh ${{ env.IMAGE_TAG }} \
             -c "./gradlew run"
       - name: Push image
-        run: docker push ${{ env.IMAGE_TAG }}
+        run: docker push ${{ env.IMAGE_FULL_NAME }} --all-tags
