@@ -27,5 +27,6 @@ jib {
 
     container {
         mainClass = "org.example.MainKt"
+        user = "test:test"
     }
 }
