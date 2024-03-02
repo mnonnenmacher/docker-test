@@ -1,7 +1,7 @@
 package org.example
 
 fun main() {
-    println("Start")
+    println("Print versions")
     run("cargo", "--version")
     run("java", "-version")
     run("npm", "--version")
