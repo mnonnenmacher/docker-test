@@ -1,3 +1,5 @@
+val dockerBaseImagePrefix: String by project
+
 plugins {
     application
     kotlin("jvm") version "1.9.22"
@@ -22,7 +24,7 @@ application {
 }
 
 jib {
-    from.image = "docker://docker-test-base:latest"
+    from.image = "${dockerBaseImagePrefix}docker-test-base:latest"
     to.image = "docker-test:latest"
 
     container {
