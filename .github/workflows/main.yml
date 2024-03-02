@@ -67,6 +67,13 @@ jobs:
         run: echo $(echo "${{ steps.meta.outputs.labels }}" | tr '\n' ',' | sed 's/,$//')
       - name: Print tags
         run: echo $(echo "${{ steps.meta.outputs.tags }}" | tr '\n' ',' | sed 's/,$//')
+      - name: Jib Cache
+        uses: actions/cache@v4
+        with:
+          path: build/jib-cache
+          key: v1-jib|${{ runner.os }}|jib-${{ hashFiles('**/build.gradle.kts', '**/*.kt') }}
+          restore-keys: |
+            v1-jib|${{ runner.os }}|jib-
       - name: Build App
         run: |
           ./gradlew \
